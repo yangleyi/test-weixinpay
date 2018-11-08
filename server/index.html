@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="http://res2.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <title>Document</title>
+    <style>
+        header, main, footer {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h3>Here is a test page for payment</h3>
+        <p>here is something...</p>
+    </header>
+    <main>
+        <button id="pay" onClick="pay()">haha</button>
+    </main>
+    <footer>----------------</footer>
+    <a onclick="log()" href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf176386df8ef3ff6&redirect_uri=http%3A%2F%2Fwww.yangleyi.top%2Flogin.html&response_type=code&scope=snsapi_base&state=state#wechat_redirect">login test</a>
+
+</body>
+</html>
+<script>
+    // var ua = navigator.userAgent.toLowerCase();
+    // var isWeixin = ua.indexOf('micromessenger') != -1;
+    // console.log($)
+    // $('#pay').onclick = pay
+    console.log('....... navigator ',navigator)
+
+    $.ajax({
+        url: 'http://www.yangleyi.top/login',
+        data: {"who": "me"},
+        type: "get",
+        // headers: {
+        //     "Accept": "application/json; charset=utf-8"
+        // },
+        success (e) {
+            console.log('login success',e)
+            // location.href=e
+        },
+        error (e) {
+            console.log('login error',e)
+        }
+    })
+
+    // function request () {
+    //     $.ajax({
+    //         url: 'http://www.yangleyi.top/getCode',
+    //         // url: 'https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=14_qMHkFaV6QcdcWL6Q_CUjxxmQyS5XPsO7dEvkagD02C8Evhh1KHECdR-50q97OZdC66a3DroVjPfllmdc9wxW4tsKnET8sbegpRMeHcRrKxWgn3tQW-ADQZYTLhcJQi8z0amxSZWjekIG5RLBYIOcABASCI',
+    //         data: {
+    //             // "type": "news",
+    //             // "offset": 0,
+    //             // "count": 20
+    //             "test": true
+    //         },
+    //         method: 'POST',
+    //         success(e) {
+    //             console.log('success ',e)
+                
+    //         },
+    //         error(e) {
+    //             console.log('fail',e)
+    //         }
+    //     })
+    // }
+
+    // function pay(e) {
+    //     console.log('pay>>>')
+    //     this.request()
+    // }
+    // function log () {
+    //     console.log(this)
+    // }
+
+    // wx.config({
+    //     debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    //     appId: 'wxf176386df8ef3ff6', // 必填，公众号的唯一标识
+    //     timestamp: '', // 必填，生成签名的时间戳
+    //     nonceStr: '', // 必填，生成签名的随机串
+    //     signature: '',// 必填，签名
+    //     jsApiList: ["updateAppMessageShareData"] // 必填，需要使用的JS接口列表
+    // });
+    // wx.ready(function(){
+    //     // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+    // });
+</script>

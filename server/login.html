@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>login</title>
+    <!-- <script src="http://res2.wx.qq.com/open/js/jweixin-1.4.0.js"></script> -->
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+</head>
+<body>
+    <h3>login page</h3>
+    <p>this is login page....</p>
+    <button onclick="buy()">购买</button>
+</body>
+</html>
+<script>
+    // var xhr = new window.XMLHttpRequest()
+    // alert(xhr)
+    // console.log('login page',location)
+    (function () {
+        console.log('login page',location)
+        let href = window.location.href
+        if (href.indexOf('?') < 0) return
+
+        let opt = getLinkOpt(window.location.href)
+        if (!opt.code) return
+
+        console.log('opt...',opt)
+        let data = {code: opt.code}
+        console.log('request data',data)
+        $.ajax({
+            url: '/getToken',
+            data: data,
+            dataType: "json",
+            type: 'post',
+            success (e) {
+                console.log('send code sucess: ', e)
+            },
+            error (e) {
+                console.log('send code error: ', e)
+            }
+        })
+    })()
+
+    function buy () {
+        $.ajax({
+            url: '/buy',
+            data: {},
+            type: 'post',
+            success (e) {
+                console.log('buy success',e)
+            },
+            error (e) {
+                console.log('buy error',e)
+            }
+        })
+    }
+
+    function getLinkOpt (str) {
+        let arr = str.split('?')[1].split('&')
+        let obj = {}
+        for(let item of arr) {
+            let itemArr = item.split('=')
+            obj[itemArr[0]] = itemArr[1]
+        }
+        return obj
+    }
+</script>
