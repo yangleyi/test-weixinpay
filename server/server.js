@@ -6,15 +6,7 @@ const cors = require('cors')
 const path = require('path')
 const colors = require('colors')
 const router = require('./router/router')
-const MongoClient = require('mongodb').MongoClient
-let dbUrl = 'http://www.yangleyi.top/data'
-MongoClient.connect(dbUrl, (err, db) => {
-  if (err) {
-    console.log('db connect fail')
-    return;
-  }
-  console.log('db:', db)
-})
+
 
 // colors.setTheme({
 //   silly: 'rainbow',
@@ -35,7 +27,7 @@ app.use(bodyParser.json()) // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.use(cors())
 app.use(router)
-console.log('.............................',router)
+// console.log('.............................',router)
 
 let port = 80
 
