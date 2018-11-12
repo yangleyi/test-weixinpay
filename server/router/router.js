@@ -105,6 +105,10 @@ router.get('/*.html', (req, res) => {
   router.post('/getToken', (req, res) => { // get openid, access_token
     console.log('>>> get req.code'.green, JSON.stringify(req.body).gray)
     console.log('>>>> req.headers\n'.green, JSON.stringify(req.headers, null, 4).grey)
+
+    // need some logic
+    // let dbData = db.searchUserData
+    // console.log('.............test',dbData)
     res.send('hah')
     // res.end()
     let code = req.body.code

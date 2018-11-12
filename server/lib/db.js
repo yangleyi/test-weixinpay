@@ -1,36 +1,7 @@
-// const mongoose = require('mongoose')
-
-// let dbUrl = 'mongodb://localhost:27017/data'
-// var db = mongoose.createConnection(dbUrl, { useNewUrlParser: true })
-// db.on('error', (eror) => {
-//   console.log(`db connect fail: ${error}`.red)
-// })
-
-// db.on('open', () => {
-//   console.log('<-- db open success -->'.magenta)
-// })
-
-// // create model
-// let userSchema = new mongoose.Schema({
-//     openid: String,
-//     access_token: String,
-//     refresh_token: String,
-//     scope: String
-// })
-// // data table
-// let userModel = db.model('user', userSchema)
 const {mongoose, userModel} = require('../lib/dbinit')
 
 module.exports = {
     async saveUserData (data) {
-        // create model
-        // let userSchema = new mongoose.Schema({
-        //     name: String,
-        //     openid: String,
-        //     access_token: String,
-        // })
-          // data table
-        // let userModel = db.model('user', userSchema)
 
         let saved = await this.searchUserData(data)
         if (saved) {
@@ -38,7 +9,6 @@ module.exports = {
             return
         }
         
-          // data
         let content = {
             openid: data.openid || 'no-openid',
             access_token: data.access_token || 'no-accessToken',
@@ -46,6 +16,7 @@ module.exports = {
             scope: data.scope || 'no-scope'
         }
         console.log('will save this data:\n'.magenta, JSON.stringify(content, null, 4).grey)
+
         let userInsert = new userModel(content)
         userInsert.save((err) => {
             if (err) {
@@ -58,15 +29,9 @@ module.exports = {
     },
 
     searchUserData (data) {
-        // let userSchema = new mongoose.Schema({
-        //     name: String,
-        //     openid: String,
-        //     access_token: String,
-        // })
-        // let userModel = db.model('user', userSchema)
-
         // search condition
         var condit = {openid: data.openid}
+
         return new Promise((resolve, reject) => {
             userModel.findOne(condit, (err, data) => {
                 if (err) {
@@ -82,12 +47,6 @@ module.exports = {
     },
 
     modifyUserData (data) {
-        // let userSchema = new mongoose.Schema({
-        //     name: String,
-        //     openid: String,
-        //     access_token: String,
-        // })
-        // let userModel = db.model('user', userSchema)
         let condit = {openid: data.openid}
 
         // change the data
@@ -107,7 +66,7 @@ module.exports = {
 
     deleteUserData (data) {
         let condit = {openid: data.openid}
-        let userInsert = new userModel(content)
+        let userInsert = new userModel(condit)
         userInsert.update(condit, err => {
             if (err) {
                 console.log(`delete user data err: ${err}`.red)
