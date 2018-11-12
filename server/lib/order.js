@@ -58,10 +58,9 @@ const Order = {
 				method: 'get'
 			}, (err, res, data) => {
 				if (err) {
-					console.log('get web access_token err: ', err)
+					console.log('get web access_token err: '.red, err)
 					reject(err)
 				}
-				console.log('get web access_token: ', data)
 				resolve(data)
 			})
 		})

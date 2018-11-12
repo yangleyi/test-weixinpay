@@ -7,20 +7,21 @@ db.on('error', (eror) => {
 })
 
 db.on('open', () => {
-  console.log('<-- db open success -->'.yellow)
+  console.log('<-- db open success -->'.magenta)
 })
 
 // create model
 let userSchema = new mongoose.Schema({
-    name: String,
     openid: String,
     access_token: String,
+    refresh_token: String,
+    scope: String
 })
 // data table
 let userModel = db.model('user', userSchema)
 
 module.exports = {
-    saveUserData (data) {
+    async saveUserData (data) {
         // create model
         // let userSchema = new mongoose.Schema({
         //     name: String,
@@ -29,19 +30,27 @@ module.exports = {
         // })
           // data table
         // let userModel = db.model('user', userSchema)
+
+        let saved = await this.searchUserData(data)
+        if (saved) {
+            console.log('this data has saved.'.magenta)
+            return
+        }
         
           // data
         let content = {
-            name: data.name || 'test',
             openid: data.openid || 'no-openid',
-            access_token: data.access_token || 'no-accessToken'
+            access_token: data.access_token || 'no-accessToken',
+            refresh_token: data.refresh_token || 'no-refreshToken',
+            scope: data.scope || 'no-scope'
         }
+        console.log('will save this data:\n'.magenta, JSON.stringify(content, null, 4).grey)
         let userInsert = new userModel(content)
         userInsert.save((err) => {
             if (err) {
               console.log(`save user data error: ${err}`.red)
             }else {
-              console.log('save user data success...'.green)
+              console.log('save user data success...'.magenta)
             }
             db.close()
         })
@@ -57,21 +66,17 @@ module.exports = {
 
         // search condition
         var condit = {openid: data.openid}
-
-        let fields = {
-            name: '',
-            openid: '',
-            access_token: ''
-        }
-
-        // let userInsert = new userModel(content)
-        userInsert.find(condit, fields, (err, data) => {
-            if (err) {
-                console.log(`search user data err: ${err}`.red)
-            } else {
-                console.log(`search data success: ${data}`.green)
-            }
-            db.close()
+        return new Promise((resolve, reject) => {
+            userModel.findOne(condit, (err, data) => {
+                if (err) {
+                    console.log(`search user data err: ${err}`.red)
+                    reject(err)
+                } else {
+                    console.log('search data success:\n'.magenta, `${data}`.grey)
+                    resolve(data)
+                }
+                // db.close()
+            })
         })
     },
 
@@ -93,7 +98,7 @@ module.exports = {
             if (err) {
                 console.log(`modify user data err: ${err}`.red)
             } else {
-                console.log('modify user data success'.green)
+                console.log('modify user data success'.magenta)
             }
             db.close()
         })
@@ -106,7 +111,7 @@ module.exports = {
             if (err) {
                 console.log(`delete user data err: ${err}`.red)
             } else {
-                console.log('delete user data success'.green)
+                console.log('delete user data success'.magenta)
             }
         })
     }

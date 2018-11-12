@@ -5,6 +5,8 @@ const fs = require('fs')
 const Tools = require('../lib/tools')
 const {oa} = require('../../config/config')
 
+const db = require('../lib/db')
+
 const path = require('path')
 let htmlPath = path.join(__dirname, "../")
 
@@ -15,7 +17,8 @@ router.get('/', (req, res, next) => {
                 
     console.log(`redirect url: ${url}`.cyan)
     res.redirect(url)
-    res.end()
+    // res.send('have redirect')
+    // res.end()
 })
 
 router.get('/login', (req,res) => {
@@ -100,9 +103,10 @@ router.get('/*.html', (req, res) => {
   })
 
   router.post('/getToken', (req, res) => { // get openid, access_token
-    console.log('>>> get token',req.body)
-    console.log('>>>> gettoken', JSON.stringify(req.headers, null, 4))
-    res.end()
+    console.log('>>> get req.code'.green, JSON.stringify(req.body).gray)
+    console.log('>>>> req.headers\n'.green, JSON.stringify(req.headers, null, 4).grey)
+    res.send('hah')
+    // res.end()
     let code = req.body.code
     if (!code) return
     let opts = {
@@ -110,8 +114,15 @@ router.get('/*.html', (req, res) => {
       secret: oa.secret,
       code: code
     }
-    Order.getWebAccess_token(opts).then(data => {
-      console.log('>>>>>>>>>> get openid ',data)
+    Order.getWebAccess_token(opts).then(data => { // data type is string
+      data = JSON.parse(data)
+      console.log('get openid and token\n'.green, JSON.stringify(data, null, 4).grey)
+      db.saveUserData({
+        openid: data.openid,
+        access_token: data.access_token,
+        refresh_token: data.refresh_token,
+        scope: data.scope
+      })
     //   information = JSON.parse(JSON.stringify(data))
     }).catch(err => {
       console.log('have problem:',err)
@@ -120,7 +131,7 @@ router.get('/*.html', (req, res) => {
 
   router.post('/buy', (req, res) => {
     console.log('>>>> buy req data', req.body)
-
+    // db.searchUserData()
   })
   
   router.get('/orderResult', (req, res) => {

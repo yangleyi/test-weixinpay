@@ -7,6 +7,17 @@ const path = require('path')
 const colors = require('colors')
 const router = require('./router/router')
 
+console.log('rainbow'.rainbow)
+console.log('grey'.grey)
+console.log('gray'.gray)
+console.log('cyan'.cyan)
+console.log('green'.green)
+console.log('yellow'.yellow)
+console.log('blue'.blue)
+console.log('red'.red)
+console.log('magenta'.magenta)
+console.log('blue'.blue)
+
 
 // colors.setTheme({
 //   silly: 'rainbow',
