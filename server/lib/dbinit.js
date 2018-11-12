@@ -14,7 +14,8 @@ let userSchema = new mongoose.Schema({
     openid: String,
     access_token: String,
     refresh_token: String,
-    scope: String
+    scope: String,
+    sign: String
 })
 // data table
 let userModel = mongoose.model('user', userSchema)

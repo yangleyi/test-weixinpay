@@ -13,7 +13,8 @@ module.exports = {
             openid: data.openid || 'no-openid',
             access_token: data.access_token || 'no-accessToken',
             refresh_token: data.refresh_token || 'no-refreshToken',
-            scope: data.scope || 'no-scope'
+            scope: data.scope || 'no-scope',
+            sign: data.sign
         }
         console.log('will save this data:\n'.magenta, JSON.stringify(content, null, 4).grey)
 

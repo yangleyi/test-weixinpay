@@ -2,6 +2,11 @@ const crypto = require('crypto')
 const xml2js = require('xml2js')
 const shortid = require('shortid')
 module.exports = {
+	getSimpleSign (openid) {
+		let times = new Date().getTime()
+		return this.getMd5(openid + times)
+	},
+
     getMd5 (str) {
 		if (typeof str !== "string") {
 			console.error('getMd5 argument must be a string: ', str)

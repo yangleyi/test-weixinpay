@@ -109,7 +109,7 @@ router.get('/*.html', (req, res) => {
     // need some logic
     // let dbData = db.searchUserData
     // console.log('.............test',dbData)
-    res.send('hah')
+    // res.send('hah')
     // res.end()
     let code = req.body.code
     if (!code) return
@@ -121,11 +121,14 @@ router.get('/*.html', (req, res) => {
     Order.getWebAccess_token(opts).then(data => { // data type is string
       data = JSON.parse(data)
       console.log('get openid and token\n'.green, JSON.stringify(data, null, 4).grey)
+      let sign = Tools.getSimpleSign(data.openid)
+      res.send(JSON.stringify({sign: sign}))
       db.saveUserData({
         openid: data.openid,
         access_token: data.access_token,
         refresh_token: data.refresh_token,
-        scope: data.scope
+        scope: data.scope,
+        sign: sign
       })
     //   information = JSON.parse(JSON.stringify(data))
     }).catch(err => {
