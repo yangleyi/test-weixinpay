@@ -121,14 +121,26 @@ router.get('/*.html', (req, res) => {
     Order.getWebAccess_token(opts).then(data => { // data type is string
       data = JSON.parse(data)
       console.log('get openid and token\n'.green, JSON.stringify(data, null, 4).grey)
-      let sign = Tools.getSimpleSign(data.openid)
-      res.send(JSON.stringify({sign: sign}))
-      db.saveUserData({
-        openid: data.openid,
-        access_token: data.access_token,
-        refresh_token: data.refresh_token,
-        scope: data.scope,
-        sign: sign
+
+      
+      db.searchUserData({openid: data.openid}).then(result => {
+        let obj = {
+            openid: data.openid,
+            access_token: data.access_token,
+            refresh_token: data.refresh_token,
+            scope: data.scope
+          }
+        if (typeof result == 'string') {
+          result = JSON.parse(result)
+        }
+        if (result && result.sign) {
+          obj.sign = result.sign
+        } else {
+          obj.sign = Tools.getSimpleSign(data.openid)
+        }
+        res.send(JSON.stringify({sign: obj.sign}))
+        db.saveUserData(obj)
+
       })
     //   information = JSON.parse(JSON.stringify(data))
     }).catch(err => {
@@ -137,8 +149,14 @@ router.get('/*.html', (req, res) => {
   })
 
   router.post('/buy', (req, res) => {
-    console.log('>>>> buy req data', req.body)
-    // db.searchUserData()
+    console.log('>>>> buy req data'.green, `${req.body}`.grey)
+    db.searchUserData({},{sign: req.body.sign}).then(data => {
+      console.log('have sign and can buy.'.green, typeof data)
+      Order.unifiedorder(data.openid).then(result => {
+        console.log('order result /n'.green,JSON.stringify(result, null, 4).grey)
+        res.send(result)
+      })
+    })
   })
   
   router.get('/orderResult', (req, res) => {

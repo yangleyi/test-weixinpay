@@ -48,10 +48,16 @@ module.exports = {
     },
 
     xmlBuildObj (xml) {
-        xml2js.parseString(xml, function (err, result) {
-            if (err) console.error('build xml fail:', err)
-            return result
-        });
+		return new Promise((resolve, reject) => {
+			xml2js.parseString(xml, {explicitArray: false}, function (err, result) {
+				if (err) {
+					console.error('build xml fail:', err)
+					reject(err)
+				}
+				resolve(result)
+				console.log('xml build obj result \n'.green,JSON.stringify(result, null, 4).grey)
+			});
+		})
 	},
 	
 	nonce_str () {

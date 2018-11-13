@@ -35,7 +35,9 @@
             // dataType: "json",
             type: 'post',
             success (e) {
-                console.log('send code sucess: ', e)
+                console.log('send code sucess: ', e, typeof e)
+                let data = JSON.parse(e)
+                mySign = data.sign
             },
             error (e) {
                 console.log('send code error: ', e)
@@ -46,7 +48,9 @@
     function buy () {
         $.ajax({
             url: '/buy',
-            data: {},
+            data: {
+                sign: mySign ? mySign: 'no'
+            },
             type: 'post',
             success (e) {
                 console.log('buy success',e)

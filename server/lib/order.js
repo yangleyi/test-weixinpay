@@ -5,6 +5,7 @@ const ip = require('ip')
 const {oa} = require('../../config/config')
 const config = require('../../config/config')
 const Tools = require('../lib/tools')
+const moment = require('moment')
 
 const Order = {
 
@@ -118,7 +119,7 @@ const Order = {
 		return new Promise((resolve, reject) => {
 		  
 		  let obj = {
-			nonce_str: this.nonce_str(),
+			nonce_str: Tools.nonce_str(),
 			body: '商品名称',
 			total_fee: 1,
 			spbill_create_ip: ip.address(),
@@ -128,12 +129,12 @@ const Order = {
 		  Object.assign(obj, config.options)
 		  let str = Tools.ascllSort(obj)
 		  str = `${str}key=${config.partnerKey}`
-		  let sign = Tools.getMd5().toUpperCase()
+		  let sign = Tools.getMd5(str).toUpperCase()
 		  Object.assign(obj, {sign})
 		  console.log('>>>>>>>>>>>>>sign',sign)
 		  let options = Tools.objBuildXml(obj)
-		  console.log('............................. opt',options)
-		  console.log('TTTTTTTTTTTTTT time...',new Date().getTime(), moment().unix())
+		  console.log('order request data:\n'.green, `${options}`.grey)
+		  console.log('test time function...'.cyan,new Date().getTime(), moment().unix())
 	
 		  request({
 			url: config.orderApi,
@@ -150,14 +151,20 @@ const Order = {
 				resolve(data)
 			} 
 			// console.log('........ request res',res)
-			console.log('........ request body',body)
+			// console.log('........ request body',body)
 		  })
 		})
 	},
 	  
-  	signAgain (xml) {
-		let xmlParser = new xml2js.Parser({explicitArray : false, ignoreAttrs : true})
-		let data = Tools.xmlBuildObj(xml).xml
+  	async signAgain (xml) {
+		// let xmlParser = new xml2js.Parser({explicitArray : false, ignoreAttrs : true})
+		console.log('>>> signagain xml\n'.green, xml.grey)
+		let data = await Tools.xmlBuildObj(xml)
+		data = data.xml
+		if (data.return_code.toUpperCase() == "FAIL") {
+			console.log('cant go on...'.red)
+			return data
+		}
 		let obj = {
 			appId: data.appid,
 			timeStamp: moment().unix(),

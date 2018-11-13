@@ -10,13 +10,18 @@ module.exports = {
         }
         
         let content = {
-            openid: data.openid || 'no-openid',
-            access_token: data.access_token || 'no-accessToken',
-            refresh_token: data.refresh_token || 'no-refreshToken',
-            scope: data.scope || 'no-scope',
+            openid: data.openid,
+            access_token: data.access_token,
+            refresh_token: data.refresh_token,
+            scope: data.scope,
             sign: data.sign
         }
         console.log('will save this data:\n'.magenta, JSON.stringify(content, null, 4).grey)
+
+        if (!data.openid || !data.access_token) {
+            console.log('cant save this data, please check'.red)
+            return
+        }
 
         let userInsert = new userModel(content)
         userInsert.save((err) => {
@@ -29,9 +34,9 @@ module.exports = {
         })
     },
 
-    searchUserData (data) {
+    searchUserData (data, condit = {openid: data.openid}) {
         // search condition
-        var condit = {openid: data.openid}
+        // var condit = {openid: data.openid}
 
         return new Promise((resolve, reject) => {
             userModel.findOne(condit, (err, data) => {
