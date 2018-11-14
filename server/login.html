@@ -46,6 +46,7 @@
     })()
 
     function buy () {
+        console.time('buy')
         $.ajax({
             url: '/buy',
             data: {
@@ -54,6 +55,7 @@
             type: 'post',
             success (e) {
                 console.log('buy success',e)
+                console.timeEnd('buy')
             },
             error (e) {
                 console.log('buy error',e)
