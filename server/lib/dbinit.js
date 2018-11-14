@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 let dbUrl = 'mongodb://localhost:27017/data'
 mongoose.connect(dbUrl, { useNewUrlParser: true })
-mongoose.connection.on('error', (eror) => {
+mongoose.connection.on('error', (error) => {
   console.log(`db connect fail: ${error}`.red)
 })
 
