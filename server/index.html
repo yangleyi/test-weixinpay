@@ -11,44 +11,165 @@
         header, main, footer {
             text-align: center;
         }
+        body {
+            margin: 0;
+        }
+        .b-center {margin-left: auto;margin-right: auto;}
+        .l-center {text-align: center;}
+        .content {
+            width: 80%;
+            padding-bottom: 80px;
+        }
+        .cont-img {
+            width: 300px;
+            height: 300px;
+            background: #f5f5f5;
+            margin-top: 80px;
+        }
+        .btn {
+            margin-top: 12px;
+        }
+        .btn button {
+            font-size: 18px;
+            line-height: 1em;
+            padding: 0.5em;
+            border-radius: 6px;
+            border: none;
+        }
+        .btn .charge {
+            width: 80%;
+            background: rgb(161, 36, 36);
+            color: #fff;
+        }
+        .btn .free {
+            width: 80%;
+            background: rgb(20, 134, 20);
+            color:#fff;
+        }
+        .disabled {position: relative;}
+        .disabled::after {
+            position: absolute;
+            left: 10%;
+            top: 50%;
+            width: 80%;
+            height: 1px;
+            content: "";
+            background: #fff;
+            color: grey;
+        }
+
+        .popup {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            text-align: center;
+        }
+        .popup::before {
+            width: 1px;
+            height: 100%;
+            content: "";
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .pop-box {display: inline-block;vertical-align: middle;}
+        .pop-cont {
+            /* display: inline-block; */
+            width: 300px;
+            background: #fff;
+            border-radius: 8px;
+            box-sizing: border-box;
+            padding: 20px;
+            line-height: 1.5em;
+            font-size: 22px;
+        }
+        .btn .close-pop {
+            min-width: 50%;
+            margin-top: 30px;
+            background: rgb(20, 134, 20);
+            color: #fff;
+            box-shadow: 0 0 1px 0px #fff;
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <h3>Here is a test page for payment</h3>
-        <p>here is something...</p>
-    </header>
+    <header></header>
+    
     <main>
-        <button id="pay" onClick="pay()">haha</button>
+        <div class="content b-center">
+            <div class="cont-img b-center"></div>
+        </div>
+        <div class="btn">
+            <button class="charge disabled">99.9￥</button>
+        </div>
+        <div class="btn">
+            <button class="free">免费</button>
+        </div>
     </main>
-    <footer>----------------</footer>
-    <a onclick="log()" href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf176386df8ef3ff6&redirect_uri=http%3A%2F%2Fwww.yangleyi.top%2Flogin.html&response_type=code&scope=snsapi_base&state=state#wechat_redirect">login test</a>
+
+    <footer></footer>
+
+    <div id="poptap"></div>
+
+    <!-- <div class="popup">
+        <div class="pop-cont b-center"></div>
+        <div class="btn l-center">
+            <button class="close-pop">ok</button>
+        </div>
+    </div> -->
 
 </body>
 </html>
 <script>
-    // var ua = navigator.userAgent.toLowerCase();
-    // var isWeixin = ua.indexOf('micromessenger') != -1;
-    // console.log($)
-    // $('#pay').onclick = pay
-    console.log('....... navigator ',navigator)
+    let body = document.getElementsByTagName('body')[0]
+    body.addEventListener('click', (e) => {
+        let className = e.target.className
+        console.log('body tag', e, className)
+        if (className.indexOf('close-pop') >= 0) {
+            hidePopup(e)
+        }
 
-    $.ajax({
-        url: 'http://www.yangleyi.top/login',
-        data: {"who": "me"},
-        type: "get",
-        // headers: {
-        //     "Accept": "application/json; charset=utf-8"
-        // },
-        success (e) {
-            console.log('login success',e)
-            // location.href=e
-        },
-        error (e) {
-            console.log('login error',e)
+        if (className.indexOf("charge") >= 0) {
+            charge(e)
+        }
+
+        if (className.indexOf("free") >= 0) {
+            charge(e)
         }
     })
+
+    function hidePopup (e) {
+        let pop = document.getElementById('popup')
+        console.log('pop', pop)
+        pop.style.display = "none"
+    }
+
+    function charge (e) {
+        let pop = document.getElementById('popup')
+        let box = document.getElementById('poptap')
+        if (pop) {
+            pop.style.display = ""
+        } else {
+            let html = `<div id="popup" class="popup">
+                            <div class="pop-box">
+                                <div class="pop-cont b-center">
+                                    <text>恭喜你！你被抽中获得免费课程了！继续和精灵学习吧！</text>
+                                </div>
+                                <div class="btn l-center">
+                                    <button class="close-pop">赶快获取课程吧</button>
+                                </div>
+                            </div>
+                        </div>` 
+            box.innerHTML = html
+        }
+    }
+
+    function goPay (e) {
+        location.href = './pay.html'
+    }
 
     // function request () {
     //     $.ajax({

@@ -2,7 +2,6 @@
 const request = require('request')
 const urlencode = require('urlencode')
 const ip = require('ip')
-const {oa} = require('../../config/config')
 const config = require('../../config/config')
 const Tools = require('../lib/tools')
 const moment = require('moment')
@@ -10,6 +9,7 @@ const moment = require('moment')
 const Order = {
 
 	getCode (obj) {
+		let oa = config.oa
 		let url = oa.authorize
 		// let uri = urlencode(obj.redirect_uri)
 		let uri = urlencode(oa.redirect)
@@ -117,8 +117,9 @@ const Order = {
 
 	unifiedorder (openid) {
 		return new Promise((resolve, reject) => {
-		  
+		  let oa = config.oa
 		  let obj = {
+			appid: oa.appid,
 			nonce_str: Tools.nonce_str(),
 			body: '商品名称',
 			total_fee: 1,
@@ -128,7 +129,8 @@ const Order = {
 		  }
 		  Object.assign(obj, config.options)
 		  let str = Tools.ascllSort(obj)
-		  str = `${str}key=${config.partnerKey}`
+		  str = `${str}&key=${config.partnerKey}`
+		  console.log('this string will signature /n'.green, str.grey)
 		  let sign = Tools.getMd5(str).toUpperCase()
 		  Object.assign(obj, {sign})
 		  console.log('>>>>>>>>>>>>>sign',sign)
@@ -158,7 +160,7 @@ const Order = {
 	  
   	async signAgain (xml) {
 		// let xmlParser = new xml2js.Parser({explicitArray : false, ignoreAttrs : true})
-		console.log('>>> signagain xml\n'.green, xml.grey)
+		// console.log('>>> signagain xml\n'.green, xml.grey)
 		let data = await Tools.xmlBuildObj(xml)
 		data = data.xml
 		if (data.return_code.toUpperCase() == "FAIL") {

@@ -102,7 +102,7 @@ router.get('/*.html', (req, res) => {
     
   })
 
-  router.post('/getToken', (req, res) => { // get openid, access_token
+  router.post('/getToken', async (req, res) => { // get openid, access_token
     console.log('>>> get req.code'.green, JSON.stringify(req.body).gray)
     console.log('>>>> req.headers\n'.green, JSON.stringify(req.headers, null, 4).grey)
 
@@ -118,45 +118,36 @@ router.get('/*.html', (req, res) => {
       secret: oa.secret,
       code: code
     }
-    Order.getWebAccess_token(opts).then(data => { // data type is string
-      data = JSON.parse(data)
-      console.log('get openid and token\n'.green, JSON.stringify(data, null, 4).grey)
-
-      
-      db.searchUserData({openid: data.openid}).then(result => {
-        let obj = {
-            openid: data.openid,
-            access_token: data.access_token,
-            refresh_token: data.refresh_token,
-            scope: data.scope
-          }
-        if (typeof result == 'string') {
-          result = JSON.parse(result)
-        }
-        if (result && result.sign) {
-          obj.sign = result.sign
-        } else {
-          obj.sign = Tools.getSimpleSign(data.openid)
-        }
-        res.send(JSON.stringify({sign: obj.sign}))
-        db.saveUserData(obj)
-
-      })
-    //   information = JSON.parse(JSON.stringify(data))
-    }).catch(err => {
-      console.log('have problem:',err)
-    })
+    let data = await Order.getWebAccess_token(opts)
+    data = JSON.parse(data)
+    console.log('get openid and token\n'.green, JSON.stringify(data, null, 4).grey)
+    let result = await db.searchUserData({openid: data.openid})
+    let obj = {
+        openid: data.openid,
+        access_token: data.access_token,
+        refresh_token: data.refresh_token,
+        scope: data.scope
+      }
+    if (typeof result == 'string') {
+      result = JSON.parse(result)
+    }
+    if (result && result.sign) {
+      obj.sign = result.sign
+    } else {
+      obj.sign = Tools.getSimpleSign(data.openid)
+    }
+    res.send(JSON.stringify({sign: obj.sign}))
+    db.saveUserData(obj)
   })
 
-  router.post('/buy', (req, res) => {
+  router.post('/buy', async (req, res) => {
     console.log('>>>> buy req data'.green, `${req.body}`.grey)
-    db.searchUserData({},{sign: req.body.sign}).then(data => {
-      console.log('have sign and can buy.'.green, typeof data)
-      Order.unifiedorder(data.openid).then(result => {
-        console.log('order result /n'.green,JSON.stringify(result, null, 4).grey)
-        res.send(result)
-      })
-    })
+    let data = await db.searchUserData({},{sign: req.body.sign})
+    console.log('have sign and can buy.'.green, typeof data)
+    
+    let result = await Order.unifiedorder(data.openid)
+    console.log('order result /n'.green,JSON.stringify(result, null, 4).grey)
+    res.send(result)
   })
   
   router.get('/orderResult', (req, res) => {
